@@ -18,6 +18,7 @@
     {% if copy.status != 'a' %}<p><strong>Due to be returned:</strong> {{copy.due_back}}</p>{% endif %}
     <p><strong>Imprint:</strong> {{copy.imprint}}</p>
     <p class="text-muted"><strong>Id:</strong> {{copy.id}}</p>
+    <a href="{% url 'renew-book-librarian' copy.id %}">Renew</a>
     {% endfor %}
   </div>
 {% endblock %}
