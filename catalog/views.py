@@ -79,7 +79,7 @@ def renew_book_librarian(request, pk):
 
             # redirect to a new URL:
             #return HttpResponseRedirect(reverse('all-borrowed') )
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('all-borrowed'))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -87,3 +87,17 @@ def renew_book_librarian(request, pk):
         form = RenewBookForm(initial={'renewal_date': proposed_renewal_date,})
 
     return render(request, 'catalog/book_renew_librarian.html', {'form': form, 'bookinst':book_inst})
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
+class LoanedBooksByAllUsersListView(PermissionRequiredMixin,generic.ListView):
+    """
+    Generic class-based view listing books on loan to all users. 
+    """
+    model = BookInstance
+    template_name ='catalog/bookinstance_list_borrowed_all.html'
+    paginate_by = 10
+    permission_required = ('catalog.can_mark_returned', 'catalog.can_edit')
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(status__exact='o').order_by('due_back')
